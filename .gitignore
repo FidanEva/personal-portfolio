@@ -1,0 +1,45 @@
+ # Global
+.DS_Store
+Thumbs.db
+
+# Node.js (backend and frontend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# dotenv env files
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+*.out
+*.pid
+*.seed
+*.tgz
+
+# VS Code
+.vscode/
+
+# Build Output
+dist/
+build/
+
+# Optional: Ignore uploads/temp if added
+uploads/
+tmp/
+temp/
+
+# React/Vite Specific
+frontend/.cache/
+frontend/.vite/
+frontend/coverage/
+frontend/public/locales/
+
+# OS-specific
+*.swp
+*.swo
