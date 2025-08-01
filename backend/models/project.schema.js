@@ -4,7 +4,7 @@ const projectSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: String,
   period: {
-    start: { type: Date, required: true },
+    start: { type: Date },
     end: { type: Date }
   },
   images: [String],
