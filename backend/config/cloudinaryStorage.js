@@ -1,42 +1,38 @@
-const cloudinary = require('./cloudinary').cloudinary;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require("./cloudinary");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const path = require("path");
 
-const FILE_TYPES = {
-  IMAGE: 'image',
-  VIDEO: 'video',
+const ALLOWED_FORMATS = {
+  images: ["jpg", "jpeg", "png"],
+  video: ["mp4", "mov"],
 };
 
 const FOLDERS = {
-  [FILE_TYPES.IMAGE]: 'projects/images',
-  [FILE_TYPES.VIDEO]: 'projects/videos',
-};
-
-const ALLOWED_FORMATS = {
-  [FILE_TYPES.IMAGE]: ['jpg', 'png', 'jpeg'],
-  [FILE_TYPES.VIDEO]: ['mp4', 'mov'],
-};
-
-const getStorageParams = (file) => {
-  if (file.mimetype.startsWith(FILE_TYPES.IMAGE)) {
-    return {
-      folder: FOLDERS[FILE_TYPES.IMAGE],
-      resource_type: FILE_TYPES.IMAGE,
-      allowed_formats: ALLOWED_FORMATS[FILE_TYPES.IMAGE],
-    };
-  }
-  if (file.mimetype.startsWith(FILE_TYPES.VIDEO)) {
-    return {
-      folder: FOLDERS[FILE_TYPES.VIDEO],
-      resource_type: FILE_TYPES.VIDEO,
-      allowed_formats: ALLOWED_FORMATS[FILE_TYPES.VIDEO],
-    };
-  }
-  throw new Error('Unsupported file type');
+  images: "projects/images",
+  video: "projects/videos",
 };
 
 const storage = new CloudinaryStorage({
   cloudinary,
-  params: async (req, file) => getStorageParams(file),
+  params: async (req, file) => {
+    const ext = path.extname(file.originalname).replace(".", "").toLowerCase();
+    const field = file.fieldname;
+
+    if (!ALLOWED_FORMATS[field]) {
+      throw new Error("Unexpected upload field");
+    }
+
+    if (!ALLOWED_FORMATS[field].includes(ext)) {
+      throw new Error(`Invalid ${field} format. Allowed: ${ALLOWED_FORMATS[field].join(", ")}`);
+    }
+
+    return {
+      folder: FOLDERS[field],
+      resource_type: field === "video" ? "video" : "image",
+      type: "private",
+      format: ext,
+    };
+  },
 });
 
 module.exports = storage;

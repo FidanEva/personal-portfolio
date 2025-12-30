@@ -12,8 +12,10 @@ app.use(express.json());
 connectToDatabase();
 
 const projectRouter = require('./routes/project.router');
+const multerErrorHandler = require('./middleware/error-handler');
 
 app.use('/api/v1/project', projectRouter);
+app.use(multerErrorHandler);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
